@@ -1,92 +1,100 @@
-import { dirname } from "path";
-import { fileURLToPath } from "url";
-import { FlatCompat } from "@eslint/eslintrc";
+import { dirname } from 'path';
+import { fileURLToPath } from 'url';
+import { FlatCompat } from '@eslint/eslintrc';
+import tsParser from '@typescript-eslint/parser';
+import tsPlugin from '@typescript-eslint/eslint-plugin';
+import reactPlugin from 'eslint-plugin-react';
+import reactHooksPlugin from 'eslint-plugin-react-hooks';
+import jsxA11yPlugin from 'eslint-plugin-jsx-a11y';
+import importPlugin from 'eslint-plugin-import';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 const compat = new FlatCompat({
   baseDirectory: __dirname,
+  recommendedConfig: tsPlugin.configs.recommended,
 });
 
-const eslintConfig = [
-  ...compat.extends("next/core-web-vitals", "next/typescript"),
+export default [
   {
+    ignores: [
+      '.next/**',
+      'public/**',
+      'node_modules/**',
+      'coverage/**',
+      '**/*.test.js',
+      'dist/**',
+    ],
+  },
+  {
+    files: ['**/*.{js,jsx,ts,tsx}'],
+    plugins: {
+      '@typescript-eslint': tsPlugin,
+      'react': reactPlugin,
+      'react-hooks': reactHooksPlugin,
+      'jsx-a11y': jsxA11yPlugin,
+      'import': importPlugin,
+    },
+    languageOptions: {
+      parser: tsParser,
+      parserOptions: {
+        ecmaVersion: 'latest',
+        sourceType: 'module',
+        ecmaFeatures: {
+          jsx: true,
+        },
+        project: './tsconfig.json',
+      },
+    },
+    settings: {
+      react: {
+        version: 'detect',
+      },
+      'import/resolver': {
+        typescript: true,
+        node: true,
+      },
+    },
     rules: {
-      "no-unused-vars": "off",
-      "rules": {
-    // 关闭原生的 no-unused-vars 规则
-    "no-unused-vars": "off",
-    // 启用 @typescript-eslint 版本的规则
-    "@typescript-eslint/no-unused-vars": ["warn", {
-      // 允许以下划线开头的变量未使用
-      "argsIgnorePattern": "^_",
-      // 允许在类型定义中存在未使用的变量
-      "varsIgnorePattern": "^_",
-      // 允许在函数参数中存在未使用的变量
-      "ignoreRestSiblings": true
-    }],
-    "import/extensions": [
-      0,
-      "ignorePackages",
-      {
-        "js": "never",
-        "jsx": "never",
-        "ts": "never",
-        "tsx": "never"
-      }
-    ],
-    "no-undef": "off",
-    "jsx-no-useless-fragment": 0,
-    "react/jsx-closing-tag-location": ["error", "line-aligned"],
-    "react/jsx-indent": ["error", 2],
-    "react/jsx-indent-props": ["error", 2],
-    "react/jsx-uses-react": "off",
-    "react/react-in-jsx-scope": "off",
-    "react/jsx-props-no-spreading": "off",
-    "eact/jsx-no-useless-fragment": 0,
-    "react/jsx-max-props-per-line": [
-      "error",
-      {
-        "maximum": 1
-      }
-    ],
-    "jsx-a11y/click-events-have-key-events": 0,
-    "jsx-a11y/no-static-element-interactions": 0,
-    "react/jsx-none-expression-per-line": 0,
-    "react/jsx-one-expression-per-line": 0,
-    "react/destructuring-assignment": 0,
-    "import/prefer-default-export": 0,
-    "jsx-a11y/heading-has-content": 0,
-    "react/function-component-definition": 0,
-    "jsx-a11y/no-noninteractive-element-interactions": 0,
-    "react/jsx-filename-extension": [
-      1,
-      {
-        "extensions": [".js", ".jsx", ".tsx"]
-      }
-    ],
-    "no-console": "warn",
-    "func-names": 0,
-    "no-param-reassign": 0,
-    "linebreak-style": "off",
-    "function-paren-newline": 0,
-    "max-len": [1, 600],
-    "import/no-extraneous-dependencies": 0,
-    "no-await-in-loop": 0,
-    "class-methods-use-this": 0,
-    "object-curly-newline": 0,
-    "no-restricted-syntax": ["error", "LabeledStatement", "WithStatement"],
-    "quotes": [1, "single"],
-    "no-underscore-dangle": 0,
-    "jsx-quotes": [1, "prefer-single"],
-    "array-callback-return": 0,
-    "react/require-default-props": "warn",
-    "no-constant-condition": "warn",
-    "@typescript-eslint/return-await": "off"
-  }
-    }
-  }
-];
+      // TypeScript specific rules
+      '@typescript-eslint/no-unused-vars': ['warn', {
+        argsIgnorePattern: '^_',
+        varsIgnorePattern: '^_',
+        ignoreRestSiblings: true,
+      }],
+      '@typescript-eslint/no-explicit-any': 'warn',
+      '@typescript-eslint/explicit-function-return-type': 'off',
+      '@typescript-eslint/explicit-module-boundary-types': 'off',
 
-export default eslintConfig;
+      // React specific rules
+      'react/react-in-jsx-scope': 'off',
+      'react/jsx-filename-extension': ['warn', { extensions: ['.tsx', '.jsx'] }],
+      'react/prop-types': 'off',
+      'react-hooks/rules-of-hooks': 'error',
+      'react-hooks/exhaustive-deps': 'warn',
+
+      // Import rules
+      'import/prefer-default-export': 'off',
+      'import/extensions': [
+        'error',
+        'ignorePackages',
+        {
+          js: 'never',
+          jsx: 'never',
+          ts: 'never',
+          tsx: 'never',
+        },
+      ],
+
+      // General rules
+      'no-unused-vars': 'off', // Using TypeScript's no-unused-vars instead
+      'no-console': process.env.NODE_ENV === 'production' ? 'error' : 'warn',
+    },
+  },
+  ...compat.config({
+    extends: [
+      'next/core-web-vitals',
+    ],
+  }),
+];

@@ -1,4 +1,3 @@
-/* eslint-disable no-shadow */
 export enum APIStatusCode {
   // 成功状态 (0-99)
   SUCCESS = 0, // 操作成功
@@ -75,7 +74,7 @@ export enum APIStatusCode {
   BACKUP_IN_PROGRESS = 5003, // 备份进行中
 }
 
-export interface APIJsonResponse<T = any> {
+export interface APIJsonResponse<T = unknown> {
   code: APIStatusCode | number;
   message: string;
   data?: T;
