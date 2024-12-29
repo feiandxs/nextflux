@@ -2,6 +2,8 @@
 
 A modern, production-ready Next.js starter kit crafted with developer experience in mind.
 
+🔥 **[Live Demo](https://nextflux.netlify.app/)**
+
 ## ✨ Features
 
 - 🛠️ **Modern Stack**
@@ -85,4 +87,3 @@ DATABASE_URL=
 ## 📄 License
 
 MIT License
-```
