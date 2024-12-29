@@ -2,6 +2,8 @@
 
 A modern, production-ready Next.js starter kit crafted with developer experience in mind.
 
+[English](./README.md) | [简体中文](./docs/README.zh-CN.md)
+
 🔥 **[Live Demo](https://nextflux.netlify.app/)**
 
 ## ✨ Features
